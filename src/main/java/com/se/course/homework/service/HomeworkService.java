@@ -42,9 +42,13 @@ public class HomeworkService {
                                   MultipartFile file, int courseId) {
         try {
             String attachments = "";
+            if (title.compareTo("") == 0 || content.compareTo("") == 0 || ddl == null)
+                return false;
+            if (ddl.before(new Date()))
+                return false;
             int homework_id = homeworkDAO.getNextHomeworkId();
             homeworkDAO.assignHomework(courseId, title, content, ddl, score, attachments);
-            if (!file.isEmpty()) {
+            if (file != null && !file.isEmpty()) {
                 attachmentService.upload(session, file, homework_id, courseId);
                 Attachment attachment = attachmentService.getHomeworkAttachment(homework_id);
                 attachments = String.valueOf(attachment.getFile_id());
